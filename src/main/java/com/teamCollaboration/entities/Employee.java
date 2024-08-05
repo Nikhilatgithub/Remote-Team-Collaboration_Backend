@@ -21,4 +21,22 @@ public class Employee extends User {
 	    @JoinColumn(name = "team_id")
 	    private Team team;
 	    // Getters and Setters
+
+		public String getJobTitle() {
+			return jobTitle;
+		}
+
+		public void setJobTitle(String jobTitle) {
+			this.jobTitle = jobTitle;
+		}
+
+		public Team getTeam() {
+			return team;
+		}
+
+		public void setTeam(Team team) {
+			this.team = team;
+		}
+	    
+	    
 }

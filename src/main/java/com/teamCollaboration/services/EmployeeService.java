@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.teamCollaboration.entities.Employee;
+import com.teamCollaboration.entities.Team;
 import com.teamCollaboration.repository.EmployeeRepository;
 
 @Service
@@ -25,7 +26,10 @@ public class EmployeeService {
 	        return employeeRepository.save(employee);
 	    }
 
-	  
+	 // Method to retrieve all Employees
+	    public List<Employee> getAllEmployees() {
+	        return employeeRepository.findAll();
+	    }
 
 	    // Method to find employee by ID
 	    public Optional<Employee> getEmployeeById(Long id) {
