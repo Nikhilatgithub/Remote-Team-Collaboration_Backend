@@ -4,40 +4,71 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.teamCollaboration.entities.Employee;
-import com.teamCollaboration.entities.Team;
-import com.teamCollaboration.repository.EmployeeRepository;
+import com.teamCollaboration.entities.Project;
+import com.teamCollaboration.entities.Task;
+import com.teamCollaboration.entities.User;
+import com.teamCollaboration.repository.ProjectRepository;
+import com.teamCollaboration.repository.TaskRepository;
+import com.teamCollaboration.repository.UserRepository;
 
 @Service
 public class EmployeeService {
-	
-	 @Autowired
-	 private EmployeeRepository employeeRepository;
 
-	   
-//	    public EmployeeService(EmployeeRepository employeeRepository) {
-//	        this.employeeRepository = employeeRepository;
-//	    }
+    private final UserRepository userRepository;
+    private final TaskRepository taskRepository;
+    private final ProjectRepository projectRepository;
 
-	    // Method to save or update an employee
-	    public Employee saveOrUpdateEmployee(Employee employee) {
-	        return employeeRepository.save(employee);
-	    }
+    @Autowired
+    public EmployeeService(UserRepository userRepository, TaskRepository taskRepository, ProjectRepository projectRepository) {
+        this.userRepository = userRepository;
+        this.taskRepository = taskRepository;
+        this.projectRepository = projectRepository;
+    }
 
-	 // Method to retrieve all Employees
-	    public List<Employee> getAllEmployees() {
-	        return employeeRepository.findAll();
-	    }
+    // Get currently logged in user (employee)
+    private User getCurrentUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user= userRepository.getUserByEmail(email);
+        return user;
+    }
 
-	    // Method to find employee by ID
-	    public Optional<Employee> getEmployeeById(Long id) {
-	        return employeeRepository.findById(id);
-	    }
+    public List<Project> getEmployeeProjects() {
+        User employee = getCurrentUser();
+        // Implement logic to fetch projects assigned to the employee
+        // Example: return projectRepository.findByTeamMembersContaining(employee);
+        return null;
+    }
 
-	    // Method to delete employee by ID
-	    public void deleteEmployeeById(Long id) {
-	        employeeRepository.deleteById(id);
-	    }
+    public List<User> getTeamMembers() {
+        User employee = getCurrentUser();
+        // Implement logic to fetch team members of the employee
+        // Example: return userRepository.findByTeam(employee.getTeam());
+        return null;
+    }
+
+    public List<Task> getAssignedTasks() {
+        User employee = getCurrentUser();
+        // Implement logic to fetch tasks assigned to the employee
+        // Example: return taskRepository.findByAssignedTo(employee);
+        return null;
+    }
+
+    public Task updateTaskStatus(Long taskId, String status) {
+        Task task = taskRepository.findById(taskId).orElseThrow(() -> new RuntimeException("Task not found"));
+        task.setStatus(status);
+        // Add more update logic if needed
+        return taskRepository.save(task);
+    }
+
+    public User updateProfile(User updatedUser) {
+        User currentUser = getCurrentUser();
+        currentUser.setName(updatedUser.getName());
+        currentUser.setEmail(updatedUser.getEmail());
+        currentUser.setPassword(updatedUser.getPassword()); // Add encryption logic if needed
+        // Add more update logic if needed
+        return userRepository.save(currentUser);
+    }
 }

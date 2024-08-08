@@ -3,17 +3,18 @@ package com.teamCollaboration.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.teamCollaboration.entities.Employee;
+import com.teamCollaboration.entities.Project;
+import com.teamCollaboration.entities.Task;
+import com.teamCollaboration.entities.User;
 import com.teamCollaboration.services.EmployeeService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 
@@ -21,33 +22,45 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/employees")
 public class EmployeeController {
 
-	private EmployeeService empService;
-	
-	@Autowired
-	public EmployeeController(EmployeeService empService) {
-		this.empService=empService;
-	}
-	
-	@PostMapping()
-	public String createNewEmployee(@RequestBody Employee emp) {
-		empService.saveOrUpdateEmployee(emp);
-		
-		return "done";
-	}
-	
-	@GetMapping()
-	public List<Employee> getMethodName() {
-		return empService.getAllEmployees();
-	}
-	
-	@DeleteMapping("/{id}")
-	public String deleteEmployee(@PathVariable Long id) {
-		empService.deleteEmployeeById(id);
-		
-		return "deleted";
-		
-		//hi nikhil
-	}
-	
-	
+	private final EmployeeService employeeService;
+
+    @Autowired
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+    }
+
+    // Endpoint to view projects assigned to the employee
+    @GetMapping("/projects")
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    public List<Project> viewEmployeeProjects() {
+        return employeeService.getEmployeeProjects();
+    }
+
+    // Endpoint to view team members of the employee
+    @GetMapping("/team-members")
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    public List<User> viewTeamMembers() {
+        return employeeService.getTeamMembers();
+    }
+
+    // Endpoint to view tasks assigned to the employee
+    @GetMapping("/tasks")
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    public List<Task> viewAssignedTasks() {
+        return employeeService.getAssignedTasks();
+    }
+
+    // Endpoint to update task status
+    @PutMapping("/tasks/{taskId}")
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    public Task updateTaskStatus(@PathVariable Long taskId, @RequestBody Task updatedTask) {
+        return employeeService.updateTaskStatus(taskId, updatedTask.getStatus());
+    }
+
+    // Endpoint to update employee's own profile
+    @PutMapping("/profile")
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    public User updateProfile(@RequestBody User updatedUser) {
+        return employeeService.updateProfile(updatedUser);
+    }	
 }

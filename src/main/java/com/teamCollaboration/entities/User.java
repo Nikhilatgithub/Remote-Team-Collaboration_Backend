@@ -1,11 +1,12 @@
 package com.teamCollaboration.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -79,6 +80,20 @@ public class User {
 
 	public void setRole(Role role) {
 		this.role = role;
+	}
+
+	public User(Long id, String name, String email, String password, String status, Role role) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.email = email;
+		this.password = password;
+		this.status = status;
+		this.role = role;
+	}
+
+	public User() {
+		
 	}
 
    
