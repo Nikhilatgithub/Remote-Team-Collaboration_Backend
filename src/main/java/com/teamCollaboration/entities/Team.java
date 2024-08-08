@@ -21,7 +21,9 @@ public class Team {
 	    private Long id;
 	    private String name;
 	    private String description;
-		public Long getId() {
+		
+	    
+	    public Long getId() {
 			return id;
 		}
 		public void setId(Long id) {
@@ -39,6 +41,7 @@ public class Team {
 		public void setDescription(String description) {
 			this.description = description;
 		}
+		
 		public Team(Long id, String name, String description) {
 			super();
 			this.id = id;

@@ -1,15 +1,24 @@
 package com.teamCollaboration.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.teamCollaboration.dto.ProjectDTO;
+import com.teamCollaboration.dto.TaskDTO;
+import com.teamCollaboration.dto.TeamMemberDTO;
+import com.teamCollaboration.dto.UserProfileDTO;
+import com.teamCollaboration.entities.Employee;
 import com.teamCollaboration.entities.Project;
 import com.teamCollaboration.entities.Task;
 import com.teamCollaboration.entities.User;
+import com.teamCollaboration.repository.EmployeeRepository;
 import com.teamCollaboration.repository.ProjectRepository;
 import com.teamCollaboration.repository.TaskRepository;
 import com.teamCollaboration.repository.UserRepository;
@@ -17,58 +26,100 @@ import com.teamCollaboration.repository.UserRepository;
 @Service
 public class EmployeeService {
 
-    private final UserRepository userRepository;
+    private final EmployeeRepository userRepository;
     private final TaskRepository taskRepository;
     private final ProjectRepository projectRepository;
-
+	private ModelMapper modelMapper;
     @Autowired
-    public EmployeeService(UserRepository userRepository, TaskRepository taskRepository, ProjectRepository projectRepository) {
+    public EmployeeService(EmployeeRepository userRepository, TaskRepository taskRepository,
+    		ProjectRepository projectRepository,ModelMapper modelMapper) {
         this.userRepository = userRepository;
         this.taskRepository = taskRepository;
         this.projectRepository = projectRepository;
+        this.modelMapper = modelMapper;
     }
 
     // Get currently logged in user (employee)
-    private User getCurrentUser() {
+    private Employee getCurrentUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user= userRepository.getUserByEmail(email);
+        Employee user= userRepository.getUserByEmail(email);
         return user;
     }
 
-    public List<Project> getEmployeeProjects() {
-        User employee = getCurrentUser();
+    public ProjectDTO getEmployeeProjects() {
+        Employee employee = getCurrentUser();
+        Long projectId=employee.getTeam().getId();
+        Project project = projectRepository.getById(projectId);
+        
         // Implement logic to fetch projects assigned to the employee
         // Example: return projectRepository.findByTeamMembersContaining(employee);
-        return null;
+        return modelMapper.map(project,ProjectDTO.class);
     }
 
-    public List<User> getTeamMembers() {
-        User employee = getCurrentUser();
+    public List<TeamMemberDTO> getTeamMembers() {
+    	  Employee employee = getCurrentUser();
+          Long teamId=employee.getTeam().getId();
+          List<TeamMemberDTO> teamMembers = 
+        		  userRepository.getUsersByTeam(teamId).stream()
+        		  .map(user -> 
+  				modelMapper.map(user,TeamMemberDTO.class)) //Stream<dto>
+  				.collect(Collectors.toList());
         // Implement logic to fetch team members of the employee
         // Example: return userRepository.findByTeam(employee.getTeam());
-        return null;
+        return teamMembers;
     }
 
-    public List<Task> getAssignedTasks() {
-        User employee = getCurrentUser();
+    public List<TaskDTO> getAssignedTasks() {
+        Employee employee = getCurrentUser();
+        Long projectId=employee.getTeam().getId();
+        List<Task> tasks = taskRepository.getTasksByUser(employee.getId(),projectId);
         // Implement logic to fetch tasks assigned to the employee
         // Example: return taskRepository.findByAssignedTo(employee);
-        return null;
+        List<TaskDTO> taskDTOs = new ArrayList<>();
+        		
+        		tasks.stream().forEach(task->{
+        	 TaskDTO taskDTO = modelMapper.map(task, TaskDTO.class);
+             taskDTO.setCreatedByUserId(task.getCreatedBy().getId());
+             taskDTO.setCreatedByUserName(task.getCreatedBy().getName());
+             taskDTO.setProjectId(task.getProject().getId());
+             taskDTO.setProjectName(task.getProject().getName());
+             
+             taskDTOs.add(taskDTO);
+        }
+        );
+       
+  
+        return taskDTOs;
     }
 
-    public Task updateTaskStatus(Long taskId, String status) {
+    public TaskDTO updateTaskStatus(Long taskId, String status) {
         Task task = taskRepository.findById(taskId).orElseThrow(() -> new RuntimeException("Task not found"));
         task.setStatus(status);
         // Add more update logic if needed
-        return taskRepository.save(task);
+        taskRepository.save(task);
+        TaskDTO taskDTO = modelMapper.map(task, TaskDTO.class);
+        taskDTO.setCreatedByUserId(task.getCreatedBy().getId());
+        taskDTO.setCreatedByUserName(task.getCreatedBy().getName());
+        taskDTO.setProjectId(task.getProject().getId());
+        taskDTO.setProjectName(task.getProject().getName());
+        return taskDTO;
     }
 
-    public User updateProfile(User updatedUser) {
-        User currentUser = getCurrentUser();
+    public UserProfileDTO updateProfile(UserProfileDTO updatedUser) {
+        Employee currentUser = getCurrentUser();
         currentUser.setName(updatedUser.getName());
         currentUser.setEmail(updatedUser.getEmail());
         currentUser.setPassword(updatedUser.getPassword()); // Add encryption logic if needed
         // Add more update logic if needed
-        return userRepository.save(currentUser);
+        return modelMapper.map(userRepository.save(currentUser), UserProfileDTO.class);
+    }
+    
+    public String updateUserStatus(String status) {
+        Employee currentUser = getCurrentUser();
+        currentUser.setStatus(status);
+        
+        
+     
+        return userRepository.save(currentUser).getStatus();
     }
 }

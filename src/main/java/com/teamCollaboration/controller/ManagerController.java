@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.teamCollaboration.dto.ProjectDTO;
+import com.teamCollaboration.dto.TeamDTO;
 import com.teamCollaboration.entities.Project;
 import com.teamCollaboration.entities.Task;
 import com.teamCollaboration.entities.Team;
@@ -31,29 +33,30 @@ public class ManagerController {
 	    // Endpoint to view all projects
 	    @GetMapping("/projects")
 	    @PreAuthorize("hasRole('MANAGER') or hasRole('ADMIN')")
-	    public List<Project> getAllProjects() {
+	    public List<ProjectDTO> getAllProjects() {
 	        return managerService.getAllProjects();
 	    }
 
 	    // Endpoint to create a new project
 	    @PostMapping("/projects")
 	    @PreAuthorize("hasRole('MANAGER') or hasRole('ADMIN')")
-	    public Project createProject(@RequestBody Project project) {
+	    public ProjectDTO createProject(@RequestBody ProjectDTO project) {
 	        return managerService.createProject(project);
 	    }
 
 	    // Endpoint to create a new team
 	    @PostMapping("/teams")
 	    @PreAuthorize("hasRole('MANAGER') or hasRole('ADMIN')")
-	    public Team createTeam(@RequestBody Team team) {
+	    public TeamDTO createTeam(@RequestBody TeamDTO team) {
 	        return managerService.createTeam(team);
 	    }
 
 	    // Endpoint to add members to a team
 	    @PostMapping("/teams/{teamId}/members")
 	    @PreAuthorize("hasRole('MANAGER') or hasRole('ADMIN')")
-	    public Team addTeamMembers(@PathVariable Long teamId, @RequestBody List<Long> memberIds) {
-	        return managerService.addTeamMembers(teamId, memberIds);
+	    public String addTeamMembers(@PathVariable Long teamId, @RequestBody List<Long> memberIds) {
+	    	managerService.addTeamMembers(teamId, memberIds);
+	        return "Done";
 	    }
 
 	    // Endpoint to create a new task

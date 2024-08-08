@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.teamCollaboration.entities.Employee;
 import com.teamCollaboration.entities.Project;
 import com.teamCollaboration.entities.Task;
 import com.teamCollaboration.entities.User;
@@ -19,7 +20,7 @@ import com.teamCollaboration.services.AdminService;
 @RequestMapping("/admin")
 public class AdminController {
 
-    private final AdminService adminService;
+    private  AdminService adminService;
 
     @Autowired
     public AdminController(AdminService adminService) {
@@ -50,14 +51,14 @@ public class AdminController {
     // Endpoint to add a new user
     @PostMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
-    public User addUser(@RequestBody User user) {
+    public Employee addUser(@RequestBody Employee user) {
         return adminService.addUser(user);
     }
 
     // Endpoint to update an existing user
     @PutMapping("/users/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public User updateUser(@PathVariable Long userId, @RequestBody User user) {
+    public Employee updateUser(@PathVariable Long userId, @RequestBody Employee user) {
         return adminService.updateUser(userId, user);
     }
 
