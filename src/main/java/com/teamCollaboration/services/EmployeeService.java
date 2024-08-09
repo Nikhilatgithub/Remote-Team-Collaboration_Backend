@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.teamCollaboration.custom_exceptions.TeamCollaborationException;
 import com.teamCollaboration.dto.ProjectDTO;
 import com.teamCollaboration.dto.TaskDTO;
 import com.teamCollaboration.dto.TeamMemberDTO;
@@ -49,7 +50,8 @@ public class EmployeeService {
     public ProjectDTO getEmployeeProjects() {
         Employee employee = getCurrentUser();
         Long projectId=employee.getTeam().getId();
-        Project project = projectRepository.getById(projectId);
+        Project project = projectRepository.findById(projectId).orElseThrow(
+        		()-> new TeamCollaborationException("Project Not Found"));
         
         // Implement logic to fetch projects assigned to the employee
         // Example: return projectRepository.findByTeamMembersContaining(employee);
@@ -93,7 +95,7 @@ public class EmployeeService {
     }
 
     public TaskDTO updateTaskStatus(Long taskId, String status) {
-        Task task = taskRepository.findById(taskId).orElseThrow(() -> new RuntimeException("Task not found"));
+        Task task = taskRepository.findById(taskId).orElseThrow(() -> new TeamCollaborationException("Task not found"));
         task.setStatus(status);
         // Add more update logic if needed
         taskRepository.save(task);

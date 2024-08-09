@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.teamCollaboration.custom_exceptions.TeamCollaborationException;
 import com.teamCollaboration.dto.ProjectDTO;
 import com.teamCollaboration.dto.TeamDTO;
 import com.teamCollaboration.entities.Employee;
@@ -68,7 +69,8 @@ public class ManagerService {
 	        Team team = teamRepository.findById(teamId).orElseThrow(() -> new RuntimeException("Team not found"));
 	       
 	        memberIds.stream().forEach(id->{
-	        	 Employee user = userRepository.getById(id);
+	        	 Employee user = userRepository.findById(id).orElseThrow(
+	        			()-> new TeamCollaborationException("User not found with id "+id));
 	        	 user.setTeam(team);
 	        	 userRepository.save(user);
 	        });

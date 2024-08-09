@@ -3,6 +3,7 @@ package com.teamCollaboration.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.teamCollaboration.custom_exceptions.TeamCollaborationException;
 import com.teamCollaboration.entities.Employee;
 import com.teamCollaboration.entities.Project;
 import com.teamCollaboration.entities.Role;
@@ -37,7 +38,7 @@ public class AdminService {
 
     public Project updateProject(Long projectId, Project updatedProject) {
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("Project not found"));
+                .orElseThrow(() -> new TeamCollaborationException("Project not found"));
         // Update project logic
         return projectRepository.save(updatedProject);
     }
@@ -53,7 +54,7 @@ public class AdminService {
 
     public Employee updateUser(Long userId, Employee updatedUser) {
     	Employee user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new TeamCollaborationException("User not found"));
         // Update user logic
         return userRepository.save(updatedUser);
     }
@@ -73,7 +74,7 @@ public class AdminService {
 
     public Task updateTask(Long taskId, Task updatedTask) {
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
+                .orElseThrow(() -> new TeamCollaborationException("Task not found"));
         // Update task logic
         return taskRepository.save(updatedTask);
     }
@@ -81,7 +82,7 @@ public class AdminService {
     public Employee assignRoleToUser(Long userId, Long roleId) {
         // Implement logic to assign role to user
     	Employee user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new TeamCollaborationException("User not found"));
         // Assign role to user logic
     	Role role = roleRepository.getById(roleId);
     	user.setRole(role);
@@ -91,7 +92,7 @@ public class AdminService {
     public Employee updateUserRole(Long userId, Long roleId) {
         // Implement logic to update user's role
     	Employee user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new TeamCollaborationException("User not found"));
         // Update user's role logic
     	Role role = roleRepository.getById(roleId);
     	user.setRole(role);
