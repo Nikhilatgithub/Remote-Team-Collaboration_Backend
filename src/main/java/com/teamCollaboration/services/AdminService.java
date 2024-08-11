@@ -1,5 +1,7 @@
 package com.teamCollaboration.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -8,12 +10,10 @@ import com.teamCollaboration.entities.Employee;
 import com.teamCollaboration.entities.Project;
 import com.teamCollaboration.entities.Role;
 import com.teamCollaboration.entities.Task;
-import com.teamCollaboration.entities.User;
 import com.teamCollaboration.repository.EmployeeRepository;
 import com.teamCollaboration.repository.ProjectRepository;
 import com.teamCollaboration.repository.RoleRepository;
 import com.teamCollaboration.repository.TaskRepository;
-import com.teamCollaboration.repository.UserRepository;
 
 @Service
 public class AdminService {
@@ -34,6 +34,11 @@ public class AdminService {
     public Project createProject(Project project) {
         // Add business logic if needed
         return projectRepository.save(project);
+    }
+    
+    public List<Project> projectList() {
+        // Add business logic if needed
+        return projectRepository.findAll();
     }
 
     public Project updateProject(Long projectId, Project updatedProject) {

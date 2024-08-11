@@ -50,6 +50,12 @@ public class ManagerService {
 	        modelMapper.map(project, ProjectDTO.class))
 	        .collect(Collectors.toList());
 	    }
+	    
+	    public List<TeamDTO> getTeamsList() {
+	        return teamRepository.findAll().stream().map(team->
+	        modelMapper.map(team, TeamDTO.class))
+	        .collect(Collectors.toList());
+	    }
 
 	    public ProjectDTO createProject(ProjectDTO project) {
 	        // Add business logic if needed

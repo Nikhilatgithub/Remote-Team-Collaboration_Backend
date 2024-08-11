@@ -82,7 +82,7 @@ public class EmployeeService {
         		tasks.stream().forEach(task->{
         	 TaskDTO taskDTO = modelMapper.map(task, TaskDTO.class);
              taskDTO.setCreatedByUserId(task.getCreatedBy().getId());
-             taskDTO.setCreatedByUserName(task.getCreatedBy().getName());
+             taskDTO.setCreatedByUserName(task.getCreatedBy().getFirstname()+" "+task.getCreatedBy().getLastname());
              taskDTO.setProjectId(task.getProject().getId());
              taskDTO.setProjectName(task.getProject().getName());
              
@@ -101,7 +101,7 @@ public class EmployeeService {
         taskRepository.save(task);
         TaskDTO taskDTO = modelMapper.map(task, TaskDTO.class);
         taskDTO.setCreatedByUserId(task.getCreatedBy().getId());
-        taskDTO.setCreatedByUserName(task.getCreatedBy().getName());
+        taskDTO.setCreatedByUserName(task.getCreatedBy().getFirstname()+" "+task.getCreatedBy().getLastname());
         taskDTO.setProjectId(task.getProject().getId());
         taskDTO.setProjectName(task.getProject().getName());
         return taskDTO;
@@ -109,7 +109,8 @@ public class EmployeeService {
 
     public UserProfileDTO updateProfile(UserProfileDTO updatedUser) {
         Employee currentUser = getCurrentUser();
-        currentUser.setName(updatedUser.getName());
+        currentUser.setFirstname(updatedUser.getFirstname());
+        currentUser.setLastname(updatedUser.getLastname());
         currentUser.setEmail(updatedUser.getEmail());
         currentUser.setPassword(updatedUser.getPassword()); // Add encryption logic if needed
         // Add more update logic if needed

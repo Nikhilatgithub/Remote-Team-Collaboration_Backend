@@ -2,7 +2,8 @@ package com.teamCollaboration.dto;
 
 public class RegisterRequest {
 
-    private String name;
+	private String firstname;
+    private String lastname;
     private String email;
     private String password;
     
@@ -10,13 +11,7 @@ public class RegisterRequest {
 		// TODO Auto-generated constructor stub
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
+	
 
 	public String getEmail() {
 		return email;
@@ -34,12 +29,41 @@ public class RegisterRequest {
 		this.password = password;
 	}
 
-	public RegisterRequest(String name, String email, String password) {
+
+
+	public String getFirstname() {
+		return firstname;
+	}
+
+
+
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
+	}
+
+
+
+	public String getLastname() {
+		return lastname;
+	}
+
+
+
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
+	}
+
+
+
+	public RegisterRequest(String firstname, String lastname, String email, String password) {
 		super();
-		this.name = name;
+		this.firstname = firstname;
+		this.lastname = lastname;
 		this.email = email;
 		this.password = password;
 	}
+
+	
     
     
 }

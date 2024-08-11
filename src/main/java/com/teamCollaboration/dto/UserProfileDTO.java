@@ -2,7 +2,8 @@ package com.teamCollaboration.dto;
 
 public class UserProfileDTO {
 	    private Long id;
-	    private String name;
+	    private String firstname;
+	    private String lastname;
 	    private String email;
 	    private String password;
 	    
@@ -10,13 +11,7 @@ public class UserProfileDTO {
 			// TODO Auto-generated constructor stub
 		}
 
-		public UserProfileDTO(Long id, String name, String email, String password) {
-			super();
-			this.id = id;
-			this.name = name;
-			this.email = email;
-			this.password = password;
-		}
+		
 
 		public Long getId() {
 			return id;
@@ -26,13 +21,7 @@ public class UserProfileDTO {
 			this.id = id;
 		}
 
-		public String getName() {
-			return name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
+		
 
 		public String getEmail() {
 			return email;
@@ -51,6 +40,42 @@ public class UserProfileDTO {
 		public void setPassword(String password) {
 			this.password = password;
 		}
+
+
+
+		public String getFirstname() {
+			return firstname;
+		}
+
+
+
+		public void setFirstname(String firstname) {
+			this.firstname = firstname;
+		}
+
+
+
+		public String getLastname() {
+			return lastname;
+		}
+
+
+
+		public void setLastname(String lastname) {
+			this.lastname = lastname;
+		}
+
+
+
+		public UserProfileDTO(Long id, String firstname, String lastname, String email, String password) {
+			super();
+			this.id = id;
+			this.firstname = firstname;
+			this.lastname = lastname;
+			this.email = email;
+			this.password = password;
+		}
 	    
+		
 	    
 }

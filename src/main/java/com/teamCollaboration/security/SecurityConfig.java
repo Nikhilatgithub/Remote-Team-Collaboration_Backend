@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 //    private final JwtTokenProvider jwtTokenProvider;
@@ -54,22 +56,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**", "/swagger-ui/index.html", "/webjars/**");
-
-    }
+//    @Override
+//    public void configure(WebSecurity web) throws Exception {
+//        web.ignoring().antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**", "/swagger-ui/index.html", "/webjars/**");
+//
+//    }
     
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.disable())
+        http.csrf(csrf -> csrf.disable());
+               http.cors(cors -> {})
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests(requests -> requests
                         .antMatchers("/auth/**").permitAll() //login and registration made public accessible
                         .antMatchers("/employee/**").hasRole("EMPLOYEE")// employee can access only employee urls
-                        .antMatchers("/manager/**").hasRole("MANAGER")//manager side 
-                        .antMatchers("/admin/**").hasRole("ADMIN")//admin side 
+                        .antMatchers("/manager/**").hasAnyAuthority("MANAGER","ADMIN")//manager side 
+                        .antMatchers("/admin/**").hasAuthority("ADMIN")//admin side 
                         .anyRequest().authenticated())
                 
                      .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);

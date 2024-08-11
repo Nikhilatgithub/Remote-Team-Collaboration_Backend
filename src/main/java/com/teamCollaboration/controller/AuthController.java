@@ -10,6 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,7 @@ import com.teamCollaboration.security.UserDetailsServiceImpl;
 import com.teamCollaboration.services.UserService;
 
 @RestController
+@CrossOrigin
 public class AuthController {
 
 	@Autowired
@@ -41,9 +43,11 @@ public class AuthController {
         try {
 			Authentication authentication = authenticationManager.authenticate(
 			        new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-			System.out.println(authentication.isAuthenticated());
+			System.out.println("user authentication : "+authentication.isAuthenticated());
+			
 			 UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
 				String token = jwtTokenProvider.generateToken(userDetails);
+				System.out.println(userDetails);
 				return ResponseEntity.ok(new AuthResponse(token));
 		} catch (UsernameNotFoundException e) {
 			System.out.println(e.getMessage());
@@ -59,7 +63,8 @@ public class AuthController {
     @PostMapping("/auth/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         User newUser = new User();
-        newUser.setName(request.getName());
+        newUser.setFirstname(request.getFirstname());
+        newUser.setLastname(request.getLastname());
         newUser.setEmail(request.getEmail());
         newUser.setPassword(passwordEncoder.encode(request.getPassword())); // Encrypt password
         // Set roles if needed
