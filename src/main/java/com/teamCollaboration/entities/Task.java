@@ -1,5 +1,6 @@
 package com.teamCollaboration.entities;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -30,9 +31,9 @@ public class Task {
 	    private String status;
 	    private String priority;
 	    @DateTimeFormat(pattern="dd/MM/yyyy")
-	    private Date startDate;
+	    private LocalDate startDate;
 	    @DateTimeFormat(pattern="dd/MM/yyyy")
-	    private Date dueDate;
+	    private LocalDate dueDate;
 
 	    @ManyToOne
 	    @JoinColumn(name = "created_by_id")
@@ -86,19 +87,19 @@ public class Task {
 			this.priority = priority;
 		}
 
-		public Date getStartDate() {
+		public LocalDate getStartDate() {
 			return startDate;
 		}
 
-		public void setStartDate(Date startDate) {
+		public void setStartDate(LocalDate startDate) {
 			this.startDate = startDate;
 		}
 
-		public Date getDueDate() {
+		public LocalDate getDueDate() {
 			return dueDate;
 		}
 
-		public void setDueDate(Date dueDate) {
+		public void setDueDate(LocalDate dueDate) {
 			this.dueDate = dueDate;
 		}
 
@@ -126,8 +127,8 @@ public class Task {
 			this.project = project;
 		}
 
-		public Task(Long id, String title, String description, String status, String priority, Date startDate,
-				Date dueDate, Employee createdBy, Employee assignedTo, Project project) {
+		public Task(Long id, String title, String description, String status, String priority, LocalDate startDate,
+				LocalDate dueDate, Employee createdBy, Employee assignedTo, Project project) {
 			super();
 			this.id = id;
 			this.title = title;

@@ -2,8 +2,10 @@ package com.teamCollaboration.controller;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.teamCollaboration.dto.EmployeeDTO;
+import com.teamCollaboration.dto.ProjectDTO;
+import com.teamCollaboration.dto.TaskDTO;
 import com.teamCollaboration.entities.Employee;
 import com.teamCollaboration.entities.Project;
 import com.teamCollaboration.entities.Task;
@@ -27,7 +32,8 @@ import com.teamCollaboration.services.AdminService;
 public class AdminController {
 	@Autowired
     private  AdminService adminService;
-
+	@Autowired
+    private  PasswordEncoder passwordEncoder;
     
 //    public AdminController(AdminService adminService) {
 //        this.adminService = adminService;
@@ -42,14 +48,14 @@ public class AdminController {
     
     @GetMapping("/projects")
      @PreAuthorize("hasAuthority('ADMIN')")
-     public List<Project> getAllProjects() {
+     public List<ProjectDTO> getAllProjects() {
          return adminService.projectList();
      }
 
     // Endpoint to update an existing project
     @PutMapping("/projects/{projectId}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public Project updateProject(@PathVariable Long projectId, @RequestBody Project project) {
+    public ProjectDTO updateProject(@PathVariable Long projectId, @RequestBody ProjectDTO project) {
         return adminService.updateProject(projectId, project);
     }
 
@@ -59,18 +65,26 @@ public class AdminController {
     public void deleteProject(@PathVariable Long projectId) {
         adminService.deleteProject(projectId);
     }
+    
+    @GetMapping("/users")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public List<EmployeeDTO> getAllUsers() {
+        return adminService.usersList();
+    }
 
     // Endpoint to add a new user
     @PostMapping("/users")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public Employee addUser(@RequestBody Employee user) {
+    public EmployeeDTO addUser(@RequestBody EmployeeDTO user) {
+    	 user.setPassword(passwordEncoder.encode(user.getPassword())); // Encrypt password
         return adminService.addUser(user);
     }
 
     // Endpoint to update an existing user
     @PutMapping("/users/{userId}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public Employee updateUser(@PathVariable Long userId, @RequestBody Employee user) {
+    public EmployeeDTO updateUser(@PathVariable Long userId, @RequestBody EmployeeDTO user) {
+    	//user.setPassword(passwordEncoder.encode(user.getPassword())); // Encrypt password
         return adminService.updateUser(userId, user);
     }
 
@@ -84,8 +98,14 @@ public class AdminController {
     // Endpoint to add a new task
     @PostMapping("/tasks")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public Task addTask(@RequestBody Task task) {
+    public TaskDTO addTask(@RequestBody TaskDTO task) {
         return adminService.addTask(task);
+    }
+    
+    @GetMapping("/tasks")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public List<TaskDTO> getTask() {
+        return adminService.taskList();
     }
 
     // Endpoint to delete a task
@@ -98,7 +118,7 @@ public class AdminController {
     // Endpoint to update a task
     @PutMapping("/tasks/{taskId}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public Task updateTask(@PathVariable Long taskId, @RequestBody Task task) {
+    public TaskDTO updateTask(@PathVariable Long taskId, @RequestBody TaskDTO task) {
         return adminService.updateTask(taskId, task);
     }
 

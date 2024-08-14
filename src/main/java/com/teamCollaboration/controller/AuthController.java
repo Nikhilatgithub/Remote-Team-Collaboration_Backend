@@ -16,11 +16,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.teamCollaboration.dto.AuthResponse;
+import com.teamCollaboration.dto.EmployeeDTO;
 import com.teamCollaboration.dto.LoginRequest;
 import com.teamCollaboration.dto.RegisterRequest;
+import com.teamCollaboration.entities.Employee;
 import com.teamCollaboration.entities.User;
 import com.teamCollaboration.security.JwtTokenProvider;
 import com.teamCollaboration.security.UserDetailsServiceImpl;
+import com.teamCollaboration.services.AdminService;
 import com.teamCollaboration.services.UserService;
 
 @RestController
@@ -35,8 +38,10 @@ public class AuthController {
     private  UserDetailsServiceImpl userDetailsService;
 	@Autowired
     private  PasswordEncoder passwordEncoder;
+//	@Autowired
+//	private UserService userService;
 	@Autowired
-	private UserService userService;
+	private AdminService userService;
 	
 	@PostMapping("/auth/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
@@ -62,7 +67,7 @@ public class AuthController {
 
     @PostMapping("/auth/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-        User newUser = new User();
+        EmployeeDTO newUser = new EmployeeDTO();
         newUser.setFirstname(request.getFirstname());
         newUser.setLastname(request.getLastname());
         newUser.setEmail(request.getEmail());
@@ -71,7 +76,7 @@ public class AuthController {
         // newUser.setRoles(...);
         // Save user in database
         // userRepository.save(newUser);
-        userService.createUser(newUser);
+        userService.addUser(newUser);
 
         return ResponseEntity.ok("User registered successfully");
     }

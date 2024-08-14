@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.teamCollaboration.custom_exceptions.TeamCollaborationException;
+import com.teamCollaboration.dto.EmployeeDTO;
 import com.teamCollaboration.dto.ProjectDTO;
 import com.teamCollaboration.dto.TaskDTO;
 import com.teamCollaboration.dto.TeamMemberDTO;
@@ -46,6 +47,8 @@ public class EmployeeService {
         Employee user= userRepository.getUserByEmail(email);
         return user;
     }
+    
+   
 
     public ProjectDTO getEmployeeProjects() {
         Employee employee = getCurrentUser();
@@ -82,7 +85,7 @@ public class EmployeeService {
         		tasks.stream().forEach(task->{
         	 TaskDTO taskDTO = modelMapper.map(task, TaskDTO.class);
              taskDTO.setCreatedByUserId(task.getCreatedBy().getId());
-             taskDTO.setCreatedByUserName(task.getCreatedBy().getFirstname()+" "+task.getCreatedBy().getLastname());
+           //  taskDTO.setCreatedByUserName(task.getCreatedBy().getFirstname()+" "+task.getCreatedBy().getLastname());
              taskDTO.setProjectId(task.getProject().getId());
              taskDTO.setProjectName(task.getProject().getName());
              
@@ -101,7 +104,7 @@ public class EmployeeService {
         taskRepository.save(task);
         TaskDTO taskDTO = modelMapper.map(task, TaskDTO.class);
         taskDTO.setCreatedByUserId(task.getCreatedBy().getId());
-        taskDTO.setCreatedByUserName(task.getCreatedBy().getFirstname()+" "+task.getCreatedBy().getLastname());
+      //  taskDTO.setCreatedByUserName(task.getCreatedBy().getFirstname()+" "+task.getCreatedBy().getLastname());
         taskDTO.setProjectId(task.getProject().getId());
         taskDTO.setProjectName(task.getProject().getName());
         return taskDTO;

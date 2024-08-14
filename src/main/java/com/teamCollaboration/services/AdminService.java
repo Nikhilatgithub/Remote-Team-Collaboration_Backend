@@ -1,11 +1,17 @@
 package com.teamCollaboration.services;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.teamCollaboration.custom_exceptions.TeamCollaborationException;
+import com.teamCollaboration.dto.EmployeeDTO;
+import com.teamCollaboration.dto.ProjectDTO;
+import com.teamCollaboration.dto.TaskDTO;
+import com.teamCollaboration.dto.TeamDTO;
 import com.teamCollaboration.entities.Employee;
 import com.teamCollaboration.entities.Project;
 import com.teamCollaboration.entities.Role;
@@ -22,6 +28,8 @@ public class AdminService {
     private  EmployeeRepository userRepository;
     private  TaskRepository taskRepository;
     private  RoleRepository roleRepository;
+    @Autowired
+    private  ModelMapper modelMapper;
 
     @Autowired
     public AdminService(RoleRepository roleRepository,ProjectRepository projectRepository, EmployeeRepository userRepository, TaskRepository taskRepository) {
@@ -36,52 +44,83 @@ public class AdminService {
         return projectRepository.save(project);
     }
     
-    public List<Project> projectList() {
+    public List<ProjectDTO> projectList() {
         // Add business logic if needed
-        return projectRepository.findAll();
+    	
+        return projectRepository.findAll().stream().map(project->
+        modelMapper.map(project, ProjectDTO.class))
+        .collect(Collectors.toList());
+        //modelMapper.map(teamRepository.save(newTeam),TeamDTO.class);
+    }
+    
+    public List<EmployeeDTO> usersList() {
+        // Add business logic if needed
+    	
+        return userRepository.findAll().stream().map(user->
+        
+        modelMapper.map(user, EmployeeDTO.class))
+        .collect(Collectors.toList());
+        //modelMapper.map(teamRepository.save(newTeam),TeamDTO.class);
     }
 
-    public Project updateProject(Long projectId, Project updatedProject) {
+    public ProjectDTO updateProject(Long projectId, ProjectDTO updatedProject) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new TeamCollaborationException("Project not found"));
         // Update project logic
-        return projectRepository.save(updatedProject);
+       Project newproject = modelMapper.map(updatedProject,Project.class);
+       newproject.setId(project.getId());
+        return modelMapper.map( projectRepository.save(newproject),ProjectDTO.class);
     }
 
     public void deleteProject(Long projectId) {
         projectRepository.deleteById(projectId);
     }
 
-    public Employee addUser(Employee user) {
+    public EmployeeDTO addUser(EmployeeDTO user) {
         // Add business logic if needed
-        return userRepository.save(user);
+    	Employee newUser=modelMapper.map(user, Employee.class);
+        return modelMapper.map(userRepository.save(newUser),EmployeeDTO.class);
     }
 
-    public Employee updateUser(Long userId, Employee updatedUser) {
+    public EmployeeDTO updateUser(Long userId, EmployeeDTO updatedUser) {
     	Employee user = userRepository.findById(userId)
                 .orElseThrow(() -> new TeamCollaborationException("User not found"));
         // Update user logic
-        return userRepository.save(updatedUser);
+    	Employee newemp = modelMapper.map(updatedUser,Employee.class);
+    	newemp.setPassword(user.getPassword());
+    	newemp.setId(user.getId());
+        return modelMapper.map(userRepository.save(newemp),EmployeeDTO.class);
     }
 
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
     }
 
-    public Task addTask(Task task) {
+    public TaskDTO addTask(TaskDTO task) {
         // Add business logic if needed
-        return taskRepository.save(task);
+    	Task newTask = modelMapper.map(task, Task.class);
+        return modelMapper.map(taskRepository.save(newTask), TaskDTO.class) ;
+    }
+    
+    public List<TaskDTO> taskList() {
+        
+    return taskRepository.findAll().stream().map(task-> 
+        modelMapper.map(task, TaskDTO.class))
+        .collect(Collectors.toList());
     }
 
     public void deleteTask(Long taskId) {
         taskRepository.deleteById(taskId);
     }
 
-    public Task updateTask(Long taskId, Task updatedTask) {
+    public TaskDTO updateTask(Long taskId, TaskDTO updatedTask) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new TeamCollaborationException("Task not found"));
         // Update task logic
-        return taskRepository.save(updatedTask);
+        Task newTask = modelMapper.map(updatedTask, Task.class);
+        newTask.setId(taskId);
+        return modelMapper.map(taskRepository.save(newTask), TaskDTO.class) ;
+        
     }
 
     public Employee assignRoleToUser(Long userId, Long roleId) {

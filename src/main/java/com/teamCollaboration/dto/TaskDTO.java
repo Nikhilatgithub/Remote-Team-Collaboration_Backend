@@ -1,5 +1,6 @@
 package com.teamCollaboration.dto;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.persistence.JoinColumn;
@@ -17,21 +18,21 @@ public class TaskDTO {
 	    private String description;
 	    private String status;
 	    private String priority;
-	    private Date startDate;
-	    private Date dueDate;
+	    private LocalDate startDate;
+	    private LocalDate dueDate;
 	    private Long createdByUserId;
-	    private String createdByUserName;
+	   // private String createdByUserName;
 	    private String createdByUserEmail;
 	    private Long assignedToUserId;
-	    private String assignedToUserName;
+	   // private String assignedToUserName;
 	    private Long projectId;
 	    private String projectName;
 
 
-	    public TaskDTO(Long id, String title, String description, String status, String priority, Date startDate,
-				Date dueDate, Long createdByUserId, String createdByUserName, String createdByUserEmail,
-				Long assignedToUserId, String assignedToUserName, Long projectId, String projectName) {
-			super();
+	    public TaskDTO(Long id, String title, String description, String status, String priority, LocalDate startDate,
+	    		LocalDate dueDate, Long createdByUserId, String createdByUserEmail,
+				Long assignedToUserId, Long projectId, String projectName) {
+			
 			this.id = id;
 			this.title = title;
 			this.description = description;
@@ -40,10 +41,10 @@ public class TaskDTO {
 			this.startDate = startDate;
 			this.dueDate = dueDate;
 			this.createdByUserId = createdByUserId;
-			this.createdByUserName = createdByUserName;
+		//	this.createdByUserName = createdByUserName;
 			this.createdByUserEmail = createdByUserEmail;
 			this.assignedToUserId = assignedToUserId;
-			this.assignedToUserName = assignedToUserName;
+		//	this.assignedToUserName = assignedToUserName;
 			this.projectId = projectId;
 			this.projectName = projectName;
 		}
@@ -59,14 +60,14 @@ public class TaskDTO {
 		}
 
 
-		public String getAssignedToUserName() {
-			return assignedToUserName;
-		}
-
-
-		public void setAssignedToUserName(String assignedToUserName) {
-			this.assignedToUserName = assignedToUserName;
-		}
+//		public String getAssignedToUserName() {
+//			return assignedToUserName;
+//		}
+//
+//
+//		public void setAssignedToUserName(String assignedToUserName) {
+//			this.assignedToUserName = assignedToUserName;
+//		}
 
 
 		public TaskDTO() {
@@ -127,22 +128,22 @@ public class TaskDTO {
 		}
 
 
-		public Date getStartDate() {
+		public LocalDate getStartDate() {
 			return startDate;
 		}
 
 
-		public void setStartDate(Date startDate) {
+		public void setStartDate(LocalDate startDate) {
 			this.startDate = startDate;
 		}
 
 
-		public Date getDueDate() {
+		public LocalDate getDueDate() {
 			return dueDate;
 		}
 
 
-		public void setDueDate(Date dueDate) {
+		public void setDueDate(LocalDate dueDate) {
 			this.dueDate = dueDate;
 		}
 
@@ -156,15 +157,15 @@ public class TaskDTO {
 			this.createdByUserId = createdByUserId;
 		}
 
-
-		public String getCreatedByUserName() {
-			return createdByUserName;
-		}
-
-
-		public void setCreatedByUserName(String createdByUserName) {
-			this.createdByUserName = createdByUserName;
-		}
+//
+//		public String getCreatedByUserName() {
+//			return createdByUserName;
+//		}
+//
+//
+//		public void setCreatedByUserName(String createdByUserName) {
+//			this.createdByUserName = createdByUserName;
+//		}
 
 
 		public String getCreatedByUserEmail() {

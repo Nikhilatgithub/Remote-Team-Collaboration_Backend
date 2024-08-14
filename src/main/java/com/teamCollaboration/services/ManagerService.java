@@ -60,7 +60,11 @@ public class ManagerService {
 	    public ProjectDTO createProject(ProjectDTO project) {
 	        // Add business logic if needed
 	    	Project newproject = modelMapper.map(project, Project.class);
-	    	projectRepository.save(newproject);
+	    	Team team=new Team();
+	    	team.setId(project.getTeamId());
+	    	
+	    	newproject.setTeam(team);
+	    	//projectRepository.save(newproject);
 	        return modelMapper.map(projectRepository.save(newproject), ProjectDTO.class) ;
 	    }
 

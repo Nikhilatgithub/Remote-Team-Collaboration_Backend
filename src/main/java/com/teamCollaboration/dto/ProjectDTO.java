@@ -12,8 +12,43 @@ public class ProjectDTO {
 	    private Date startDate;
 	    private Date endDate;
 	    private String status;
-	    private Team team;
+	    private Long teamId;
+	    private String teamName;
+	    private String TeamDescription;
 	    
+	    
+	    
+		public ProjectDTO(Long id, String name, String description, Date startDate, Date endDate, String status,
+				Long teamId, String teamName, String teamDescription) {
+			super();
+			this.id = id;
+			this.name = name;
+			this.description = description;
+			this.startDate = startDate;
+			this.endDate = endDate;
+			this.status = status;
+			this.teamId = teamId;
+			this.teamName = teamName;
+			TeamDescription = teamDescription;
+		}
+		public Long getTeamId() {
+			return teamId;
+		}
+		public void setTeamId(Long teamId) {
+			this.teamId = teamId;
+		}
+		public String getTeamName() {
+			return teamName;
+		}
+		public void setTeamName(String teamName) {
+			this.teamName = teamName;
+		}
+		public String getTeamDescription() {
+			return TeamDescription;
+		}
+		public void setTeamDescription(String teamDescription) {
+			TeamDescription = teamDescription;
+		}
 		public Long getId() {
 			return id;
 		}
@@ -50,26 +85,12 @@ public class ProjectDTO {
 		public void setStatus(String status) {
 			this.status = status;
 		}
-		public Team getTeam() {
-			return team;
-		}
-		public void setTeam(Team team) {
-			this.team = team;
-		}
+		
 	    
 	    public ProjectDTO() {
 			// TODO Auto-generated constructor stub
 		}
-		public ProjectDTO(Long id, String name, String description, Date startDate, Date endDate, String status,
-				Team team) {
-			this.id = id;
-			this.name = name;
-			this.description = description;
-			this.startDate = startDate;
-			this.endDate = endDate;
-			this.status = status;
-			this.team = team;
-		}
+		
 	    
 	    
 }

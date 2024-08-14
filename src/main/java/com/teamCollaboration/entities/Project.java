@@ -1,8 +1,10 @@
 package com.teamCollaboration.entities;
 
 
+import java.time.LocalDate;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,21 +19,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+
 @Entity
 public class Project {
 	 @Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long id;
+	 	@Column(unique = true)
 	    private String name;
 	    private String description;
 	    @DateTimeFormat(pattern="dd/MM/yyyy")
-	    private Date startDate;
+	    private LocalDate startDate;
 	    @DateTimeFormat(pattern="dd/MM/yyyy")
-	    private Date endDate;
+	    private LocalDate endDate;
 	    private String status;
 	    @ManyToOne
 	    @JoinColumn(name = "team_id")
@@ -61,19 +61,19 @@ public class Project {
 			this.description = description;
 		}
 
-		public Date getStartDate() {
+		public LocalDate getStartDate() {
 			return startDate;
 		}
 
-		public void setStartDate(Date startDate) {
+		public void setStartDate(LocalDate startDate) {
 			this.startDate = startDate;
 		}
 
-		public Date getEndDate() {
+		public LocalDate getEndDate() {
 			return endDate;
 		}
 
-		public void setEndDate(Date endDate) {
+		public void setEndDate(LocalDate endDate) {
 			this.endDate = endDate;
 		}
 
@@ -85,7 +85,7 @@ public class Project {
 			this.team = team;
 		}
 
-		public Project(Long id, String name, String description, Date startDate, Date endDate, Team team,String status) {
+		public Project(Long id, String name, String description, LocalDate startDate, LocalDate endDate, Team team,String status) {
 			super();
 			this.id = id;
 			this.name = name;
