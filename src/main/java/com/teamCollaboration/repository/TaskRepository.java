@@ -10,6 +10,6 @@ import com.teamCollaboration.entities.Task;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
-	@Query("select t from Task t where t.assignedTo.id = :user_id AND t.project.id = :projectId")
-	public List<Task> getTasksByUser(@Param("user_id") Long user_id, @Param("projectId") Long projectId);
+	@Query("select t from Task t where t.assignedTo.id = :user_id ")
+	public List<Task> getTasksByUser(@Param("user_id") Long user_id);
 }

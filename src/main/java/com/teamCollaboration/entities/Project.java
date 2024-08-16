@@ -4,6 +4,7 @@ package com.teamCollaboration.entities;
 import java.time.LocalDate;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,7 +34,7 @@ public class Project {
 	    @DateTimeFormat(pattern="dd/MM/yyyy")
 	    private LocalDate endDate;
 	    private String status;
-	    @ManyToOne
+	    @ManyToOne(cascade = CascadeType.ALL)
 	    @JoinColumn(name = "team_id")
 	    private Team team;
 

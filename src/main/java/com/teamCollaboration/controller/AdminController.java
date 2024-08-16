@@ -1,9 +1,11 @@
 package com.teamCollaboration.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,8 +25,10 @@ import com.teamCollaboration.dto.TaskDTO;
 import com.teamCollaboration.entities.Employee;
 import com.teamCollaboration.entities.Project;
 import com.teamCollaboration.entities.Task;
+import com.teamCollaboration.entities.Team;
 import com.teamCollaboration.entities.User;
 import com.teamCollaboration.services.AdminService;
+import com.teamCollaboration.services.TeamService;
 
 @RestController
 @CrossOrigin
@@ -34,47 +38,48 @@ public class AdminController {
     private  AdminService adminService;
 	@Autowired
     private  PasswordEncoder passwordEncoder;
-    
+	@Autowired
+	private  TeamService teamService;
 //    public AdminController(AdminService adminService) {
 //        this.adminService = adminService;
 //    }
 
     // Endpoint to create a new project
     @PostMapping("/projects")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     public Project createProject(@RequestBody Project project) {
         return adminService.createProject(project);
     }
     
     @GetMapping("/projects")
-     @PreAuthorize("hasAuthority('ADMIN')")
+     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
      public List<ProjectDTO> getAllProjects() {
          return adminService.projectList();
      }
 
     // Endpoint to update an existing project
     @PutMapping("/projects/{projectId}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     public ProjectDTO updateProject(@PathVariable Long projectId, @RequestBody ProjectDTO project) {
         return adminService.updateProject(projectId, project);
     }
 
     // Endpoint to delete a project
     @DeleteMapping("/projects/{projectId}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     public void deleteProject(@PathVariable Long projectId) {
         adminService.deleteProject(projectId);
     }
     
     @GetMapping("/users")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     public List<EmployeeDTO> getAllUsers() {
         return adminService.usersList();
     }
 
     // Endpoint to add a new user
     @PostMapping("/users")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     public EmployeeDTO addUser(@RequestBody EmployeeDTO user) {
     	 user.setPassword(passwordEncoder.encode(user.getPassword())); // Encrypt password
         return adminService.addUser(user);
@@ -82,7 +87,7 @@ public class AdminController {
 
     // Endpoint to update an existing user
     @PutMapping("/users/{userId}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     public EmployeeDTO updateUser(@PathVariable Long userId, @RequestBody EmployeeDTO user) {
     	//user.setPassword(passwordEncoder.encode(user.getPassword())); // Encrypt password
         return adminService.updateUser(userId, user);
@@ -90,34 +95,34 @@ public class AdminController {
 
     // Endpoint to delete a user
     @DeleteMapping("/users/{userId}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     public void deleteUser(@PathVariable Long userId) {
         adminService.deleteUser(userId);
     }
 
     // Endpoint to add a new task
     @PostMapping("/tasks")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     public TaskDTO addTask(@RequestBody TaskDTO task) {
         return adminService.addTask(task);
     }
     
     @GetMapping("/tasks")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     public List<TaskDTO> getTask() {
         return adminService.taskList();
     }
 
     // Endpoint to delete a task
     @DeleteMapping("/tasks/{taskId}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     public void deleteTask(@PathVariable Long taskId) {
         adminService.deleteTask(taskId);
     }
 
     // Endpoint to update a task
     @PutMapping("/tasks/{taskId}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     public TaskDTO updateTask(@PathVariable Long taskId, @RequestBody TaskDTO task) {
         return adminService.updateTask(taskId, task);
     }
@@ -134,5 +139,30 @@ public class AdminController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public User updateUserRole(@PathVariable Long userId, @PathVariable Long roleId) {
         return adminService.updateUserRole(userId, roleId);
+    }
+    
+    
+    @GetMapping("/teams")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
+    public List<Team> getAllTeams() {
+        return teamService.getAllTeams();
+    }
+    
+    @PutMapping("teams/{id}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
+    public ResponseEntity<Team> updateTeam(@PathVariable Long id, @RequestBody Team updatedTeam) {
+        Optional<Team> existingTeam = teamService.getTeamById(id);
+        if (existingTeam.isPresent()) {
+            Team team = existingTeam.get();
+            // Update fields based on updatedTeam
+            team.setName(updatedTeam.getName());
+            team.setDescription(updatedTeam.getDescription());
+
+            // Save updated team entity
+            Team savedTeam = teamService.saveOrUpdateTeam(team);
+            return ResponseEntity.ok(savedTeam);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

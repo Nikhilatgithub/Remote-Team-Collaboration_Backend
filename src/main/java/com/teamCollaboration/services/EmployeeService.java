@@ -14,11 +14,13 @@ import com.teamCollaboration.custom_exceptions.TeamCollaborationException;
 import com.teamCollaboration.dto.EmployeeDTO;
 import com.teamCollaboration.dto.ProjectDTO;
 import com.teamCollaboration.dto.TaskDTO;
+import com.teamCollaboration.dto.TeamDTO;
 import com.teamCollaboration.dto.TeamMemberDTO;
 import com.teamCollaboration.dto.UserProfileDTO;
 import com.teamCollaboration.entities.Employee;
 import com.teamCollaboration.entities.Project;
 import com.teamCollaboration.entities.Task;
+import com.teamCollaboration.entities.Team;
 import com.teamCollaboration.entities.User;
 import com.teamCollaboration.repository.EmployeeRepository;
 import com.teamCollaboration.repository.ProjectRepository;
@@ -48,13 +50,32 @@ public class EmployeeService {
         return user;
     }
     
-   
+    public Employee getCurrentUserDetails( String email) {
+       
+        Employee user= userRepository.getUserByEmail(email);
+        return user;
+    }
+    
+    public EmployeeDTO getCurrentUserDetails() {
+        
+        Employee user= getCurrentUser();
+       return modelMapper.map(user, EmployeeDTO.class);
+       
+    }
+    
+    public TeamDTO getCurrentUserTeam() {
+        Employee user= getCurrentUser();
+        TeamDTO team = new TeamDTO();
+        team.setDescription(user.getTeam().getDescription());
+        team.setName(user.getTeam().getName());
+        return team;
+    }
 
     public ProjectDTO getEmployeeProjects() {
         Employee employee = getCurrentUser();
         Long projectId=employee.getTeam().getId();
-        Project project = projectRepository.findById(projectId).orElseThrow(
-        		()-> new TeamCollaborationException("Project Not Found"));
+        Project project = projectRepository.findByTeamId(projectId);
+        
         
         // Implement logic to fetch projects assigned to the employee
         // Example: return projectRepository.findByTeamMembersContaining(employee);
@@ -77,20 +98,22 @@ public class EmployeeService {
     public List<TaskDTO> getAssignedTasks() {
         Employee employee = getCurrentUser();
         Long projectId=employee.getTeam().getId();
-        List<Task> tasks = taskRepository.getTasksByUser(employee.getId(),projectId);
+        List<Task> tasks = taskRepository.getTasksByUser(employee.getId());
         // Implement logic to fetch tasks assigned to the employee
         // Example: return taskRepository.findByAssignedTo(employee);
         List<TaskDTO> taskDTOs = new ArrayList<>();
         		
         		tasks.stream().forEach(task->{
+        			System.out.println("task name"+task.getTitle());
         	 TaskDTO taskDTO = modelMapper.map(task, TaskDTO.class);
-             taskDTO.setCreatedByUserId(task.getCreatedBy().getId());
+            // taskDTO.setCreatedByUserId(task.getCreatedBy().getId());
            //  taskDTO.setCreatedByUserName(task.getCreatedBy().getFirstname()+" "+task.getCreatedBy().getLastname());
              taskDTO.setProjectId(task.getProject().getId());
              taskDTO.setProjectName(task.getProject().getName());
              
              taskDTOs.add(taskDTO);
         }
+        		
         );
        
   
@@ -103,7 +126,7 @@ public class EmployeeService {
         // Add more update logic if needed
         taskRepository.save(task);
         TaskDTO taskDTO = modelMapper.map(task, TaskDTO.class);
-        taskDTO.setCreatedByUserId(task.getCreatedBy().getId());
+        //taskDTO.setCreatedByUserId(task.getCreatedBy().getId());
       //  taskDTO.setCreatedByUserName(task.getCreatedBy().getFirstname()+" "+task.getCreatedBy().getLastname());
         taskDTO.setProjectId(task.getProject().getId());
         taskDTO.setProjectName(task.getProject().getName());

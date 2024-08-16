@@ -24,6 +24,7 @@ import com.teamCollaboration.entities.User;
 import com.teamCollaboration.security.JwtTokenProvider;
 import com.teamCollaboration.security.UserDetailsServiceImpl;
 import com.teamCollaboration.services.AdminService;
+import com.teamCollaboration.services.EmployeeService;
 import com.teamCollaboration.services.UserService;
 
 @RestController
@@ -38,8 +39,8 @@ public class AuthController {
     private  UserDetailsServiceImpl userDetailsService;
 	@Autowired
     private  PasswordEncoder passwordEncoder;
-//	@Autowired
-//	private UserService userService;
+	@Autowired
+	private EmployeeService empService;
 	@Autowired
 	private AdminService userService;
 	
@@ -53,7 +54,13 @@ public class AuthController {
 			 UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
 				String token = jwtTokenProvider.generateToken(userDetails);
 				System.out.println(userDetails);
-				return ResponseEntity.ok(new AuthResponse(token));
+				AuthResponse respones= new AuthResponse(token);
+				respones.setEmail(request.getEmail());
+				
+				Employee emp=empService.getCurrentUserDetails(request.getEmail());
+				
+				respones.setRole(emp.getRole().getName());
+				return ResponseEntity.ok(respones);
 		} catch (UsernameNotFoundException e) {
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

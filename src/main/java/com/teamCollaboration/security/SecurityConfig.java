@@ -69,9 +69,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests(requests -> requests
                         .antMatchers("/auth/**").permitAll() //login and registration made public accessible
-                        .antMatchers("/employee/**").hasRole("EMPLOYEE")// employee can access only employee urls
+                        .antMatchers("/forgot-password/**").permitAll()
+                        .antMatchers("/reset-password/**").permitAll()
+                        .antMatchers("/employee/**").hasAnyAuthority("EMPLOYEE","MANAGER","ADMIN")// employee can access only employee urls
                         .antMatchers("/manager/**").hasAnyAuthority("MANAGER","ADMIN")//manager side 
-                        .antMatchers("/admin/**").hasAuthority("ADMIN")//admin side 
+                        .antMatchers("/admin/**").hasAnyAuthority("ADMIN","MANAGER")//admin side 
                         .anyRequest().authenticated())
                 
                      .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);

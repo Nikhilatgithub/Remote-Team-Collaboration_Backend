@@ -3,6 +3,8 @@ package com.teamCollaboration.services;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import com.teamCollaboration.repository.RoleRepository;
 import com.teamCollaboration.repository.TaskRepository;
 
 @Service
+@Transactional
 public class AdminService {
 
     private  ProjectRepository projectRepository;

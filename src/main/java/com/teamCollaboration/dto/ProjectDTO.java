@@ -1,5 +1,6 @@
 package com.teamCollaboration.dto;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import com.teamCollaboration.entities.Team;
@@ -9,8 +10,8 @@ public class ProjectDTO {
 		private Long id;
 	    private String name;
 	    private String description;
-	    private Date startDate;
-	    private Date endDate;
+	    private LocalDate startDate;
+	    private LocalDate endDate;
 	    private String status;
 	    private Long teamId;
 	    private String teamName;
@@ -18,7 +19,7 @@ public class ProjectDTO {
 	    
 	    
 	    
-		public ProjectDTO(Long id, String name, String description, Date startDate, Date endDate, String status,
+		public ProjectDTO(Long id, String name, String description, LocalDate startDate, LocalDate endDate, String status,
 				Long teamId, String teamName, String teamDescription) {
 			super();
 			this.id = id;
@@ -67,16 +68,16 @@ public class ProjectDTO {
 		public void setDescription(String description) {
 			this.description = description;
 		}
-		public Date getStartDate() {
+		public LocalDate getStartDate() {
 			return startDate;
 		}
-		public void setStartDate(Date startDate) {
+		public void setStartDate(LocalDate startDate) {
 			this.startDate = startDate;
 		}
-		public Date getEndDate() {
+		public LocalDate getEndDate() {
 			return endDate;
 		}
-		public void setEndDate(Date endDate) {
+		public void setEndDate(LocalDate endDate) {
 			this.endDate = endDate;
 		}
 		public String getStatus() {

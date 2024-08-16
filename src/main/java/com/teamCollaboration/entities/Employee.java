@@ -1,5 +1,7 @@
 package com.teamCollaboration.entities;
 
+import javax.persistence.CascadeType;
+import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -18,8 +20,8 @@ public class Employee extends User {
 	  
 	    private String jobTitle;
 	   
-	    @ManyToOne
-	    @JoinColumn(name = "team_id")
+	    @ManyToOne(cascade = CascadeType.REMOVE)
+	    @JoinColumn(name = "team_id" )
 	    private Team team;
 	    // Getters and Setters
 
